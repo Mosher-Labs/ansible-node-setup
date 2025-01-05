@@ -1,0 +1,13 @@
+# ansible/playbook.yml
+---
+- name: Setup dependencies
+  hosts: k3s_nodes
+  become: true
+  roles:
+    - dependencies
+
+- name: Setup k3s nodes
+  hosts: k3s_nodes
+  become: true
+  roles:
+    - k3s_install
