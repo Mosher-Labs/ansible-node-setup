@@ -37,6 +37,28 @@ pipx install --incude-deps ansible
 pipx ensurepath
 ```
 
+### Configure individual node
+
+After basic Ubuntu Server install:
+
+```bash
+ssh ubuntu-virtualbox
+sudo adduser ansible
+sudo usermod -aG sudo ansible
+sudo su
+echo 'ansible ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+exit
+exit
+
+# On host machine
+
+# Copy SSH key to node
+ssh-copy-id ansible@ubuntu-virtualbox
+
+# Export the key to be used by Ansible
+op item get "k3s-node-ansible-ssh-key" --field "private key" > $HOME/.ssh/ansible_key
+```
+
 ## 🔰 Contributing
 
 Upon first clone, install the pre-commit hooks.
