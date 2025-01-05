@@ -1,0 +1,5 @@
+---
+- name: Configure machines
+  hosts: localhost
+  roles:
+    - { role: hello_world, tags: "hello_world" }

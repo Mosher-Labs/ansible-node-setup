@@ -1,0 +1,16 @@
+---
+extends: default
+
+rules:
+  braces:
+    max-spaces-inside: 1
+  comments:
+    min-spaces-from-content: 1
+  comments-indentation: false
+  line-length:
+    ignore:
+      - .github/workflows
+      - taskfiles/infra/Taskfile.yml
+  octal-values:
+    forbid-implicit-octal: true
+    forbid-explicit-octal: true
