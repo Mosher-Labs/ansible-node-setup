@@ -59,6 +59,26 @@ ssh-copy-id ansible@ubuntu-virtualbox
 op item get "k3s-node-ansible-ssh-key" --field "private key" > $HOME/.ssh/ansible_key
 ```
 
+### Run ansible playbooks
+
+```bash
+ansible-galaxy collection install --requirements-file requirements.yml
+ansible-playbook -i inventory.ini playbook.yml \
+--private-key ~/.ssh/ansible_key --user ansible
+```
+
+### Setup kubeconfig
+
+```bash
+scp -i ~/.ssh/ansible_key ansible@192.168.202.14:/etc/rancher/k3s/k3s.yaml ~/k3s.yaml
+sed -i '' 's/127.0.0.1/192.168.202.14/g' ~/k3s.yaml
+export KUBECONFIG=~/k3s.yaml
+kubectl get nodes
+kubectl get deployments --namespace default
+kubectl get pods --namespace default
+kubectl get services --namespace default
+```
+
 ## 🔰 Contributing
 
 Upon first clone, install the pre-commit hooks.

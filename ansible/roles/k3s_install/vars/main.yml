@@ -1,7 +1,0 @@
-# ansible/roles/k3s_install/vars/main.yml
----
-k3s_install_hello_world_namespace: default
-k3s_install_hello_world_deployment_name: hello-world
-k3s_install_hello_world_service_name: hello-world
-k3s_install_hello_world_image: "nginxdemos/hello"
-k3s_install_hello_world_port: 80
