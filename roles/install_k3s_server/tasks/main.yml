@@ -11,14 +11,6 @@
   args:
     creates: /usr/local/bin/k3s
 
-- name: Wait for k3s server to be ready
-  ansible.builtin.command: kubectl get nodes
-  register: result
-  until: result.rc == 0
-  retries: 10
-  delay: 15
-  changed_when: false
-
 - name: Get k3s join token
   ansible.builtin.command: cat /var/lib/rancher/k3s/server/node-token
   register: k3s_token
@@ -29,3 +21,22 @@
     content: "{{ k3s_token.stdout }}"
     dest: "/tmp/k3s_token"
     mode: '0600'
+
+- name: Change ownership of k3s.yaml to ansible user
+  ansible.builtin.command: chown ansible /etc/rancher/k3s/k3s.yaml
+  become: true
+  changed_when: false
+
+- name: Set permissions for k3s.yaml
+  ansible.builtin.file:
+    path: /etc/rancher/k3s/k3s.yaml
+    mode: '0644'
+  become: true
+
+- name: Wait for k3s server to be ready
+  ansible.builtin.command: kubectl get nodes
+  register: result
+  until: result.rc == 0
+  retries: 10
+  delay: 15
+  changed_when: false

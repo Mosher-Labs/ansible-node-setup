@@ -59,6 +59,15 @@ ssh-copy-id ansible@ubuntu-virtualbox
 op item get "k3s-node-ansible-ssh-key" --field "private key" > $HOME/.ssh/ansible_key
 ```
 
+### Setup kubeconfig
+
+```bash
+scp -i ~/.ssh/ansible_key ansible@192.168.202.14:/etc/rancher/k3s/k3s.yaml ~/k3s.yaml
+sed -i '' 's/127.0.0.1/192.168.202.14/g' ~/k3s.yaml
+export KUBECONFIG=~/k3s.yaml
+kubectl get nodes
+```
+
 ## 🔰 Contributing
 
 Upon first clone, install the pre-commit hooks.
