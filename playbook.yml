@@ -1,0 +1,19 @@
+# playbook.yml
+---
+- name: Setup dependencies
+  hosts: all
+  become: true
+  roles:
+    - dependencies
+
+- name: Install k3s server
+  hosts: server
+  become: true
+  roles:
+    - install_k3s_server
+
+- name: Install k3s agents
+  hosts: agents
+  become: true
+  roles:
+    - install_k3s_agents
