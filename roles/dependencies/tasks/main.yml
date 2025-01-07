@@ -8,8 +8,3 @@
     - python3-pip
     - python3-kubernetes
     - vim
-
-# - name: Ensure kubernetes Python module is installed
-#   ansible.builtin.pip:
-#     name: kubernetes
-#     state: present
