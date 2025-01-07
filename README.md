@@ -77,20 +77,6 @@ kubectl get nodes
 kubectl get deployments --namespace default
 kubectl get pods --namespace default
 kubectl get services --namespace default
-
-## More detailed queries
-kubectl describe deployment hello-world -n default
-kubectl describe pod <pod-name> -n default
-```
-
-### Connect to the hello-world service in a browser
-
-```bash
-kubectl describe service hello-world -n default
-kubectl get nodes -o wide
-
-# Notate the IP of the server node
-curl <SERVER_NODE_IP>:30001
 ```
 
 ## 🔰 Contributing
