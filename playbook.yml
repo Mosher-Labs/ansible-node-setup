@@ -17,3 +17,9 @@
   become: true
   roles:
     - install_k3s_agents
+
+- name: Deploy hello-world container
+  hosts: server
+  become: true
+  roles:
+    - deploy_hello_world
