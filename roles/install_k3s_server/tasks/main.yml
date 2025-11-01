@@ -1,10 +1,36 @@
 # roles/install_k3s_server/tasks/main.yml
 ---
+- name: Create k3s config directory
+  ansible.builtin.file:
+    path: /etc/rancher/k3s
+    state: directory
+    mode: "0755"
+
+- name: Create custom resolv.conf for k3s
+  ansible.builtin.copy:
+    dest: /etc/rancher/k3s/resolv.conf
+    content: |
+      nameserver 8.8.8.8
+      nameserver 8.8.4.4
+      search cluster.local svc.cluster.local
+      options ndots:5
+    mode: "0644"
+
+- name: Create k3s server configuration file
+  ansible.builtin.copy:
+    dest: /etc/rancher/k3s/config.yaml
+    content: |
+      cluster-dns: "10.43.0.10"
+      cluster-domain: "cluster.local"
+      kubelet-arg:
+        - "resolv-conf=/run/systemd/resolve/resolv.conf"
+    mode: "0644"
+
 - name: Download k3s install script
   ansible.builtin.get_url:
     url: https://get.k3s.io
     dest: /tmp/k3s_install.sh
-    mode: '0755'
+    mode: "0755"
 
 - name: Install k3s server
   ansible.builtin.command: /tmp/k3s_install.sh
@@ -13,14 +39,14 @@
 
 - name: Get k3s join token
   ansible.builtin.command: cat /var/lib/rancher/k3s/server/node-token
-  register: k3s_token
+  register: install_k3s_server_k3s_token
   changed_when: false
 
 - name: Save k3s join token to a file
   ansible.builtin.copy:
-    content: "{{ k3s_token.stdout }}"
+    content: "{{ install_k3s_server_k3s_token.stdout }}"
     dest: "/tmp/k3s_token"
-    mode: '0600'
+    mode: "0600"
 
 - name: Change ownership of k3s.yaml to ansible user
   ansible.builtin.command: chown ansible /etc/rancher/k3s/k3s.yaml
@@ -30,13 +56,13 @@
 - name: Set permissions for k3s.yaml
   ansible.builtin.file:
     path: /etc/rancher/k3s/k3s.yaml
-    mode: '0644'
+    mode: "0644"
   become: true
 
 - name: Wait for k3s server to be ready
   ansible.builtin.command: kubectl get nodes
-  register: result
-  until: result.rc == 0
+  register: install_k3s_server_result
+  until: install_k3s_server_result.rc == 0
   retries: 10
   delay: 15
   changed_when: false
