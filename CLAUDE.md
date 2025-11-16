@@ -299,10 +299,13 @@ This repository uses pre-commit hooks for quality control.
 **Setup:**
 
 ```bash
-pre-commit install
-pre-commit run -a --all-files
-pre-commit autoupdate
+pre-commit install              # One-time setup
+pre-commit run --all-files      # Run manually (DO THIS BEFORE COMMITTING!)
+pre-commit autoupdate           # Update hook versions
 ```
+
+**IMPORTANT:** Always run `pre-commit run --all-files` BEFORE committing
+to catch and fix errors (especially markdown and ansible-lint issues).
 
 ## Troubleshooting
 
@@ -354,6 +357,7 @@ ssh ansible@hp-elitedesk sudo cat /var/lib/rancher/k3s/server/node-token
 ### When Working on This Repo
 
 1. **Test in VirtualBox first** - Use commented nodes for testing changes
+1. **Run pre-commit hooks** BEFORE committing (fix all errors!)
 1. **Backup before major changes** - k3s cluster data is critical
 1. **Document role changes** - Update this file when roles change
 1. **Use tags** - For targeted playbook runs (e.g., `--tags dependencies`)
