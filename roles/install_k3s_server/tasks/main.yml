@@ -1,5 +1,43 @@
 # roles/install_k3s_server/tasks/main.yml
 ---
+- name: Allow K3s Flannel VXLAN traffic through firewall
+  community.general.ufw:
+    rule: allow
+    port: "8472"
+    proto: udp
+    comment: "K3s Flannel VXLAN"
+  when: ansible_facts['distribution'] == 'Ubuntu'
+  register: install_k3s_server_ufw_flannel_result
+  failed_when: >
+    install_k3s_server_ufw_flannel_result.failed and
+    'Could not find' not in install_k3s_server_ufw_flannel_result.msg | default('')
+
+- name: Allow K3s API server access from cluster network
+  community.general.ufw:
+    rule: allow
+    port: "6443"
+    proto: tcp
+    src: "192.168.87.0/24"
+    comment: "K3s API server"
+  when: ansible_facts['distribution'] == 'Ubuntu'
+  register: install_k3s_server_ufw_api_result
+  failed_when: >
+    install_k3s_server_ufw_api_result.failed and
+    'Could not find' not in install_k3s_server_ufw_api_result.msg | default('')
+
+- name: Allow K3s kubelet API access from cluster network
+  community.general.ufw:
+    rule: allow
+    port: "10250"
+    proto: tcp
+    src: "192.168.87.0/24"
+    comment: "K3s kubelet"
+  when: ansible_facts['distribution'] == 'Ubuntu'
+  register: install_k3s_server_ufw_kubelet_result
+  failed_when: >
+    install_k3s_server_ufw_kubelet_result.failed and
+    'Could not find' not in install_k3s_server_ufw_kubelet_result.msg | default('')
+
 - name: Create k3s config directory
   ansible.builtin.file:
     path: /etc/rancher/k3s
@@ -10,8 +48,7 @@
   ansible.builtin.copy:
     dest: /etc/rancher/k3s/resolv.conf
     content: |
-      nameserver 8.8.8.8
-      nameserver 8.8.4.4
+      nameserver 192.168.87.1
       search cluster.local svc.cluster.local
       options ndots:5
     mode: "0644"
@@ -22,8 +59,12 @@
     content: |
       cluster-dns: "10.43.0.10"
       cluster-domain: "cluster.local"
+      node-ip: "{{ ansible_host }}"
+      flannel-iface: "{{ ansible_default_ipv4.interface }}"
+      flannel-backend: "vxlan"
+      disable-network-policy: true
       kubelet-arg:
-        - "resolv-conf=/run/systemd/resolve/resolv.conf"
+        - "resolv-conf=/etc/rancher/k3s/resolv.conf"
     mode: "0644"
 
 - name: Download k3s install script

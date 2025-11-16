@@ -66,29 +66,29 @@ ansible-node-setup/
 The main playbook (`playbook.yml`) runs in this order:
 
 1. **Setup dependencies** (all nodes)
-   - System updates
-   - Required packages
-   - Kernel optimizations
-   - Container runtime prerequisites
+    - System updates
+    - Required packages
+    - Kernel optimizations
+    - Container runtime prerequisites
 
-2. **Install k3s server** (server group)
-   - Downloads and installs k3s
-   - Configures as control plane
-   - Generates node token for agents
-   - Sets up kubeconfig
+1. **Install k3s server** (server group)
+    - Downloads and installs k3s
+    - Configures as control plane
+    - Generates node token for agents
+    - Sets up kubeconfig
 
-3. **Install k3s agents** (agents group)
-   - Downloads and installs k3s
-   - Joins cluster using server token
-   - Registers as worker nodes
+1. **Install k3s agents** (agents group)
+    - Downloads and installs k3s
+    - Joins cluster using server token
+    - Registers as worker nodes
 
 ## Initial Node Setup (One-time per node)
 
 ### Base OS Installation
 
 1. Install Ubuntu Server (minimal installation)
-2. Set hostname during install or via `hostnamectl`
-3. Configure static IP or DHCP reservation
+1. Set hostname during install or via `hostnamectl`
+1. Configure static IP or DHCP reservation
 
 ### Create Ansible User
 
@@ -250,8 +250,8 @@ k3s bundles:
 **Workflow:**
 
 1. Run `ansible-playbook` to provision cluster (this repo)
-2. Install ArgoCD via Helm (bootstrap in homelab-gitops)
-3. ArgoCD manages all subsequent deployments from Git
+1. Install ArgoCD via Helm (bootstrap in homelab-gitops)
+1. ArgoCD manages all subsequent deployments from Git
 
 ### Relationship to helm-charts
 
@@ -354,20 +354,20 @@ ssh ansible@hp-elitedesk sudo cat /var/lib/rancher/k3s/server/node-token
 ### When Working on This Repo
 
 1. **Test in VirtualBox first** - Use commented nodes for testing changes
-2. **Backup before major changes** - k3s cluster data is critical
-3. **Document role changes** - Update this file when roles change
-4. **Use tags** - For targeted playbook runs (e.g., `--tags dependencies`)
-5. **Idempotency** - Ensure roles can run multiple times safely
+1. **Backup before major changes** - k3s cluster data is critical
+1. **Document role changes** - Update this file when roles change
+1. **Use tags** - For targeted playbook runs (e.g., `--tags dependencies`)
+1. **Idempotency** - Ensure roles can run multiple times safely
 
 ### Cluster Rebuild Process
 
 If you need to rebuild the cluster:
 
 1. Run uninstall scripts on all nodes
-2. Clean up any remaining k3s data
-3. Re-run ansible playbook
-4. Re-bootstrap ArgoCD from homelab-gitops
-5. ArgoCD will restore all applications from Git
+1. Clean up any remaining k3s data
+1. Re-run ansible playbook
+1. Re-bootstrap ArgoCD from homelab-gitops
+1. ArgoCD will restore all applications from Git
 
 ### Secrets Management
 
@@ -387,8 +387,8 @@ If you need to rebuild the cluster:
 ## References
 
 - @README.md - Quick start guide
-- k3s Documentation: https://docs.k3s.io/
-- Ansible Documentation: https://docs.ansible.com/
+- k3s Documentation: <https://docs.k3s.io/>
+- Ansible Documentation: <https://docs.ansible.com/>
 - Related repo: @../homelab-gitops - GitOps deployment
 
 ---
