@@ -349,8 +349,35 @@ ssh ansible@hp-elitedesk sudo cat /var/lib/rancher/k3s/server/node-token
 
 ## Important Notes
 
+### Code Quality Standards
+
+**CRITICAL:** All code must adhere to linter rules from the start. Do NOT write
+code that needs fixing after running pre-commit hooks.
+
+**Markdown (markdownlint):**
+
+- Use 2-space indentation for nested lists under ordered lists
+- Use inline formatting instead of deeply nested lists when possible
+- Keep lines under 120 characters
+- Use consistent list marker styles
+
+**YAML (yamllint):**
+
+- Maximum line length: 80 characters
+- Use 2-space indentation
+- No trailing whitespace
+- Proper quoting for strings containing special characters
+
+**Ansible (ansible-lint):**
+
+- Use `failed_when` instead of `ignore_errors: true`
+- Prefix variables with role name (e.g., `install_k3s_server_result`)
+- Always use FQCN for modules (e.g., `ansible.builtin.command`)
+- Split long lines across multiple lines using YAML block scalars
+
 ### When Working on This Repo
 
+1. **Write linter-compliant code from the start** - Don't fix after the fact
 1. **Test in VirtualBox first** - Use commented nodes for testing changes
 1. **Run pre-commit hooks** BEFORE committing (fix all errors!)
 1. **Backup before major changes** - k3s cluster data is critical
