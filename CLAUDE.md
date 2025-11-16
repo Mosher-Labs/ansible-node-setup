@@ -354,6 +354,11 @@ ssh ansible@hp-elitedesk sudo cat /var/lib/rancher/k3s/server/node-token
 **CRITICAL:** All code must adhere to linter rules from the start. Do NOT write
 code that needs fixing after running pre-commit hooks.
 
+**Python Version:**
+
+This project requires **Python 3.12**. A `.python-version` file is included
+for automatic version switching with mise, pyenv, asdf, and other version managers.
+
 **Markdown (markdownlint):**
 
 Configuration: `.markdownlint.yaml` (allows 2-space indent, 120 char lines)
