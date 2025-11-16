@@ -4,7 +4,7 @@ default_install_hook_types:
   - commit-msg
 
 default_language_version:
-  python: python3.12
+  python: python3
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
