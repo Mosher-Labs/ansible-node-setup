@@ -356,7 +356,7 @@ code that needs fixing after running pre-commit hooks.
 
 **Python Version:**
 
-This project requires **Python 3.12**. A `.python-version` file is included
+This project requires **Python 3.14**. A `.python-version` file is included
 for automatic version switching with mise, pyenv, asdf, and other version managers.
 
 **Markdown (markdownlint):**
