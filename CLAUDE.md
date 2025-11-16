@@ -29,13 +29,8 @@ that sets up the cluster before GitOps (ArgoCD) takes over.
 
 ### Agent Nodes (Workers)
 
-- **macmini-2010**
-  - IP: 192.168.87.11
-  - Inventory Group: `[agents]`
-
-- **battlestation-ubuntu**
-  - IP: 192.168.87.12
-  - Inventory Group: `[agents]`
+- **macmini-2010:** IP 192.168.87.11, Inventory Group `[agents]`
+- **battlestation-ubuntu:** IP 192.168.87.12, Inventory Group `[agents]`
 
 ### Legacy/Commented Nodes
 
@@ -47,7 +42,7 @@ Previously used VirtualBox test nodes (commented out in inventory):
 
 ## Repository Structure
 
-```
+```text
 ansible-node-setup/
 ├── ansible.cfg              # Ansible configuration
 ├── inventory.ini            # Cluster node inventory
@@ -66,21 +61,21 @@ ansible-node-setup/
 The main playbook (`playbook.yml`) runs in this order:
 
 1. **Setup dependencies** (all nodes)
-    - System updates
-    - Required packages
-    - Kernel optimizations
-    - Container runtime prerequisites
+  - System updates
+  - Required packages
+  - Kernel optimizations
+  - Container runtime prerequisites
 
 1. **Install k3s server** (server group)
-    - Downloads and installs k3s
-    - Configures as control plane
-    - Generates node token for agents
-    - Sets up kubeconfig
+  - Downloads and installs k3s
+  - Configures as control plane
+  - Generates node token for agents
+  - Sets up kubeconfig
 
 1. **Install k3s agents** (agents group)
-    - Downloads and installs k3s
-    - Joins cluster using server token
-    - Registers as worker nodes
+  - Downloads and installs k3s
+  - Joins cluster using server token
+  - Registers as worker nodes
 
 ## Initial Node Setup (One-time per node)
 

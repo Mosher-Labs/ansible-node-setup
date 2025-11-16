@@ -10,7 +10,8 @@
   register: install_k3s_agents_ufw_flannel_result
   failed_when: >
     install_k3s_agents_ufw_flannel_result.failed and
-    'Could not find' not in install_k3s_agents_ufw_flannel_result.msg | default('')
+    'Could not find' not in
+    install_k3s_agents_ufw_flannel_result.msg | default('')
 
 - name: Allow K3s API server access from cluster network
   community.general.ufw:
@@ -23,7 +24,8 @@
   register: install_k3s_agents_ufw_api_result
   failed_when: >
     install_k3s_agents_ufw_api_result.failed and
-    'Could not find' not in install_k3s_agents_ufw_api_result.msg | default('')
+    'Could not find' not in
+    install_k3s_agents_ufw_api_result.msg | default('')
 
 - name: Allow K3s kubelet API access from cluster network
   community.general.ufw:
@@ -36,7 +38,8 @@
   register: install_k3s_agents_ufw_kubelet_result
   failed_when: >
     install_k3s_agents_ufw_kubelet_result.failed and
-    'Could not find' not in install_k3s_agents_ufw_kubelet_result.msg | default('')
+    'Could not find' not in
+    install_k3s_agents_ufw_kubelet_result.msg | default('')
 
 - name: Create k3s config directory
   ansible.builtin.file:
