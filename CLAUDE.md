@@ -420,6 +420,29 @@ If you need to rebuild the cluster:
 - **k3s token:** Generated during server install, not stored in Git
 - **Kubeconfig:** Retrieved from server, stored locally (not in Git)
 
+## Git Workflow
+
+1. **Create feature branch:** `git checkout -b feature/description`
+1. **Make changes** to playbooks, roles, or documentation
+1. **ALWAYS run pre-commit BEFORE committing:** `pre-commit run --all-files`
+   - Fix ALL errors (especially ansible-lint, yamllint, and markdown)
+   - Do NOT commit with `--no-verify` unless absolutely necessary
+1. **Commit with conventional format:** `git commit -m "type: description"`
+1. **Push and create PR:** `gh pr create --title "feat: description"`
+1. **Test changes:** If your changes reference shared workflows that were also updated,
+   temporarily change the reference from `@main` to `@your-branch` to test, verify
+   the PR passes, then change back to `@main` before merging
+1. **Merge to main:** Ansible playbooks are ready to run
+
+**Commit Format:** Conventional Commits (enforced by pre-commit hook)
+
+- `feat:` - New feature or role
+- `fix:` - Bug fix
+- `docs:` - Documentation changes
+- `chore:` - Maintenance
+- `refactor:` - Code refactoring
+- `test:` - Temporary test changes (like branch references)
+
 ## TODO / Future Improvements
 
 - [ ] Setup and configure molecule tests
