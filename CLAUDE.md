@@ -422,6 +422,12 @@ If you need to rebuild the cluster:
 
 ## Git Workflow
 
+> **CRITICAL:** Always use pull requests - no exceptions. NEVER commit or push
+> directly to `main`. ALL changes MUST go through a PR, even small fixes. This
+> applies to Claude Code sessions as well as manual changes.
+
+**Workflow Steps:**
+
 1. **Create feature branch:** `git checkout -b feature/description`
 1. **Make changes** to playbooks, roles, or documentation
 1. **ALWAYS run pre-commit BEFORE committing:** `pre-commit run --all-files`
