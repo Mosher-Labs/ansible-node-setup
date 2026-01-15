@@ -11,6 +11,8 @@
   failed_when: >
     install_k3s_agents_ufw_flannel_result.failed and
     'Could not find' not in
+    install_k3s_agents_ufw_flannel_result.msg | default('') and
+    'Failed to find' not in
     install_k3s_agents_ufw_flannel_result.msg | default('')
 
 - name: Allow K3s API server access from cluster network
@@ -25,6 +27,8 @@
   failed_when: >
     install_k3s_agents_ufw_api_result.failed and
     'Could not find' not in
+    install_k3s_agents_ufw_api_result.msg | default('') and
+    'Failed to find' not in
     install_k3s_agents_ufw_api_result.msg | default('')
 
 - name: Allow K3s kubelet API access from cluster network
@@ -39,6 +43,8 @@
   failed_when: >
     install_k3s_agents_ufw_kubelet_result.failed and
     'Could not find' not in
+    install_k3s_agents_ufw_kubelet_result.msg | default('') and
+    'Failed to find' not in
     install_k3s_agents_ufw_kubelet_result.msg | default('')
 
 - name: Create k3s config directory
@@ -61,7 +67,7 @@
     dest: /etc/rancher/k3s/config.yaml
     content: |
       node-ip: "{{ ansible_host }}"
-      flannel-iface: "{{ ansible_default_ipv4.interface }}"
+      flannel-iface: "{{ ansible_facts['default_ipv4']['interface'] }}"
       kubelet-arg:
         - "resolv-conf=/etc/rancher/k3s/resolv.conf"
         - "system-reserved=cpu=250m,memory=512Mi"
