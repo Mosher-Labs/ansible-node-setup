@@ -68,6 +68,9 @@
       disable-network-policy: true
       kubelet-arg:
         - "resolv-conf=/etc/rancher/k3s/resolv.conf"
+        - "system-reserved=cpu=250m,memory=512Mi"
+        - "kube-reserved=cpu=250m,memory=512Mi"
+        - "eviction-hard=memory.available<500Mi,nodefs.available<10%"
     mode: "0644"
 
 - name: Download k3s install script
