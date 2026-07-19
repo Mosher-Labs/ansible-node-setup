@@ -4,7 +4,7 @@
 ![GitHub Issues](https://img.shields.io/github/issues/mosher-labs/ansible-node-setup)
 ![GitHub last commit](https://img.shields.io/github/last-commit/mosher-labs/ansible-node-setup)
 ![GitHub repo size](https://img.shields.io/github/repo-size/mosher-labs/ansible-node-setup)
-![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/mosher-labs/ansible-node-setup)
+![Libraries.io status](https://img.shields.io/librariesio/github/mosher-labs/ansible-node-setup)
 ![GitHub License](https://img.shields.io/github/license/mosher-labs/ansible-node-setup)
 ![GitHub Sponsors](https://img.shields.io/github/sponsors/mosher-labs)
 
