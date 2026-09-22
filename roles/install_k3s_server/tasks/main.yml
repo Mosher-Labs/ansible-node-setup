@@ -90,6 +90,16 @@
   args:
     creates: /usr/local/bin/k3s
 
+- name: Determine installed k3s version
+  ansible.builtin.command: k3s --version
+  register: install_k3s_server_version_output
+  changed_when: false
+
+- name: Share k3s version with agents
+  ansible.builtin.set_fact:
+    install_k3s_server_version: >-
+      {{ install_k3s_server_version_output.stdout_lines[0].split()[2] }}
+
 - name: Get k3s join token
   ansible.builtin.command: cat /var/lib/rancher/k3s/server/node-token
   register: install_k3s_server_k3s_token
