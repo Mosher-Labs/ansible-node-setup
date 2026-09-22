@@ -9,11 +9,11 @@
     - python3-pip
     - vim
 
-- name: Configure DNS with PiHole primary and Google fallback
+- name: Configure DNS with Cloudflare primary
   ansible.builtin.lineinfile:
     path: /etc/systemd/resolved.conf
     regexp: '^#?DNS='
-    line: 'DNS=192.168.87.101 8.8.8.8 8.8.4.4'
+    line: 'DNS=1.1.1.1 1.0.0.1'
     state: present
   notify: Restart systemd-resolved
 
@@ -21,7 +21,7 @@
   ansible.builtin.lineinfile:
     path: /etc/systemd/resolved.conf
     regexp: '^#?FallbackDNS='
-    line: 'FallbackDNS=1.1.1.1 1.0.0.1'
+    line: 'FallbackDNS=8.8.8.8 8.8.4.4'
     state: present
   notify: Restart systemd-resolved
 

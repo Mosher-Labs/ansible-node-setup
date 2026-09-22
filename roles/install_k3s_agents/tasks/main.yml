@@ -95,3 +95,5 @@
   environment:
     K3S_URL: "https://{{ hostvars[groups['server'][0]].ansible_host }}:6443"
     K3S_TOKEN: "{{ lookup('file', '/tmp/k3s_token') }}"
+    INSTALL_K3S_VERSION: >-
+      {{ hostvars[groups['server'][0]].install_k3s_server_version }}
