@@ -1,0 +1,74 @@
+---
+# Bounds rsyslog, logrotate and journald so a runaway logger cannot fill
+# a node's root filesystem. The rsyslog tasks are skipped on hosts that
+# log only to the journal.
+
+- name: Detect rsyslog
+  ansible.builtin.stat:
+    path: /etc/rsyslog.conf
+  register: log_hygiene_rsyslog_conf
+
+- name: Detect the rsyslog logrotate stanza
+  ansible.builtin.stat:
+    path: /etc/logrotate.d/rsyslog
+  register: log_hygiene_logrotate_conf
+
+- name: Rate limit the rsyslog local log socket
+  ansible.builtin.replace:
+    path: /etc/rsyslog.conf
+    regexp: '^module\(load="imuxsock"[^)]*\)'
+    replace: >-
+      module(load="imuxsock"
+      SysSock.RateLimit.Interval="{{ log_hygiene_rsyslog_ratelimit_interval }}"
+      SysSock.RateLimit.Burst="{{ log_hygiene_rsyslog_ratelimit_burst }}")
+    validate: rsyslogd -N1 -f %s
+  when: log_hygiene_rsyslog_conf.stat.exists
+  notify: Restart rsyslog
+
+- name: Install the syslog drop filter
+  ansible.builtin.template:
+    src: rsyslog-spam-filters.conf.j2
+    dest: /etc/rsyslog.d/05-spam-filters.conf
+    owner: root
+    group: root
+    mode: '0644'
+  when:
+    - log_hygiene_rsyslog_conf.stat.exists
+    - log_hygiene_drop_patterns | length > 0
+  notify: Restart rsyslog
+
+- name: Remove the syslog drop filter when no patterns are set
+  ansible.builtin.file:
+    path: /etc/rsyslog.d/05-spam-filters.conf
+    state: absent
+  when:
+    - log_hygiene_rsyslog_conf.stat.exists
+    - log_hygiene_drop_patterns | length == 0
+  notify: Restart rsyslog
+
+- name: Cap syslog file size in logrotate
+  ansible.builtin.lineinfile:
+    path: /etc/logrotate.d/rsyslog
+    regexp: '^\s*maxsize\s'
+    line: "\tmaxsize {{ log_hygiene_logrotate_maxsize }}"
+    insertafter: '^\s*rotate\s'
+    state: present
+  when: log_hygiene_logrotate_conf.stat.exists
+
+- name: Bound the systemd journal
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/journald.conf
+    regexp: '^#?{{ item.key }}='
+    line: '{{ item.key }}={{ item.value }}'
+    insertafter: '^\[Journal\]'
+    state: present
+  loop:
+    - key: SystemMaxUse
+      value: '{{ log_hygiene_journal_max_use }}'
+    - key: SystemMaxFileSize
+      value: '{{ log_hygiene_journal_max_file_size }}'
+    - key: RuntimeMaxUse
+      value: '{{ log_hygiene_journal_runtime_max_use }}'
+  loop_control:
+    label: '{{ item.key }}'
+  notify: Restart systemd-journald

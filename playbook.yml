@@ -6,6 +6,12 @@
   roles:
     - dependencies
 
+- name: Apply log hygiene safeguards
+  hosts: all
+  become: true
+  roles:
+    - log_hygiene
+
 - name: Install k3s server
   hosts: server
   become: true

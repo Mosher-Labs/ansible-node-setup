@@ -1,0 +1,20 @@
+---
+# Tunable caps for the log_hygiene role. Defaults bound each node's log
+# output to a few GB so one misbehaving process cannot fill the disk.
+
+# rsyslog accepts at most _burst messages from the local log socket per
+# _interval seconds. Ubuntu ships this unlimited.
+log_hygiene_rsyslog_ratelimit_interval: 5
+log_hygiene_rsyslog_ratelimit_burst: 2000
+
+# logrotate rotates a syslog file at this size regardless of schedule.
+log_hygiene_logrotate_maxsize: 1G
+
+# Bounds on the persistent and runtime journals.
+log_hygiene_journal_max_use: 1G
+log_hygiene_journal_max_file_size: 128M
+log_hygiene_journal_runtime_max_use: 256M
+
+# Substrings of messages to drop before they reach disk. Empty installs
+# no drop-in file. Use only for a known, diagnosed log flood.
+log_hygiene_drop_patterns: []

@@ -1,0 +1,5 @@
+# Managed by Ansible (log_hygiene role). Drops diagnosed log spam before
+# rsyslog writes it to disk. Edit log_hygiene_drop_patterns, not this file.
+{% for pattern in log_hygiene_drop_patterns %}
+if $msg contains "{{ pattern }}" then stop
+{% endfor %}
