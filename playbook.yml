@@ -12,6 +12,12 @@
   roles:
     - log_hygiene
 
+- name: Configure storage
+  hosts: all
+  become: true
+  roles:
+    - storage
+
 - name: Install k3s server
   hosts: server
   become: true

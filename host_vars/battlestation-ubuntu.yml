@@ -1,0 +1,27 @@
+---
+# The second NVMe is a data drive, split so cluster PVs cannot take the whole
+# disk. local-path does not enforce PV capacity and k3s owns
+# local-path-config, so the cap has to be this mount rather than a
+# Kubernetes setting.
+
+storage_volume_groups:
+  - name: data-vg
+    devices:
+      - /dev/nvme0n1p1
+
+# Both sized as a fraction of the VG, not %FREE: community.general.lvol is
+# documented as not idempotent with %FREE.
+storage_logical_volumes:
+  - vg: data-vg
+    name: general
+    size: 50%VG
+    fs: ext4
+    label: data
+    mountpoint: /data
+    owner: benniemosher
+  - vg: data-vg
+    name: k3sstore
+    size: 50%VG
+    fs: ext4
+    label: k3sstore
+    mountpoint: /var/lib/rancher/k3s/storage
