@@ -1,0 +1,19 @@
+---
+# Declarative storage for a node. Both lists default to empty, so any host
+# that declares no storage variables is left untouched.
+
+# Each entry: {name, devices: [...]}
+storage_volume_groups: []
+
+# Each entry: {vg, name, size, fs, label, mountpoint} plus optional
+# owner, group, mode, mkfs_opts, mount_opts.
+storage_logical_volumes: []
+
+# mkfs options per filesystem type. ext4 reserves 5% of blocks for root by
+# default, which is sized for a root filesystem; -m 1 returns ~37G on a 460G
+# data volume.
+storage_mkfs_opts:
+  ext4: -m 1
+
+# nofail keeps a missing or failed data disk from blocking boot.
+storage_mount_opts: defaults,nofail,x-systemd.device-timeout=10s

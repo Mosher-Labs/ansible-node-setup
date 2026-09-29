@@ -48,8 +48,11 @@ ansible-node-setup/
 ├── inventory.ini            # Cluster node inventory
 ├── playbook.yml             # Main playbook
 ├── requirements.yml         # Ansible Galaxy dependencies
+├── host_vars/               # Per-host variables (storage layouts)
 ├── roles/
 │   ├── dependencies/        # System dependencies (all nodes)
+│   ├── log_hygiene/         # Log size caps (all nodes)
+│   ├── storage/             # LVM volumes, filesystems, mounts (all nodes)
 │   ├── install_k3s_server/  # k3s server setup
 │   └── install_k3s_agents/  # k3s agent setup
 ├── .ansible/                # Ansible runtime data
@@ -65,6 +68,18 @@ The main playbook (`playbook.yml`) runs in this order:
   - Required packages
   - Kernel optimizations
   - Container runtime prerequisites
+
+1. **Apply log hygiene safeguards** (all nodes)
+  - rsyslog local-socket rate limit
+  - logrotate `maxsize` on the syslog stanza
+  - journald size bounds
+  - rsyslog tasks skip hosts with no `/etc/rsyslog.conf`
+
+1. **Configure storage** (all nodes)
+  - Volume groups, logical volumes, filesystems and mounts
+  - Driven entirely by `storage_*` variables; hosts declaring none are
+    untouched
+  - Refuses any device that already holds a filesystem
 
 1. **Install k3s server** (server group)
   - Downloads and installs k3s

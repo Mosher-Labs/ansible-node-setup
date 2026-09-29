@@ -1,0 +1,82 @@
+---
+# Builds the volume groups, logical volumes, filesystems and mounts declared
+# in storage_volume_groups and storage_logical_volumes.
+
+- name: Ensure LVM tooling is present
+  ansible.builtin.apt:
+    name: lvm2
+    state: present
+  when: storage_volume_groups | length > 0
+
+- name: Probe the devices that would join a volume group
+  ansible.builtin.command:
+    cmd: blkid -p -o value -s TYPE {{ item }}
+  register: storage_device_probe
+  changed_when: false
+  failed_when: false
+  # Read-only, so it must run in check mode too or the guard below has
+  # nothing to assert against.
+  check_mode: false
+  loop: "{{ storage_volume_groups | map(attribute='devices') | flatten }}"
+
+- name: Refuse to claim a device that already holds a filesystem
+  ansible.builtin.assert:
+    that: (item.stdout | trim) in ['', 'LVM2_member']
+    fail_msg: >-
+      {{ item.item }} holds a {{ item.stdout | trim }} filesystem. Refusing
+      to add it to a volume group. Wipe it deliberately first.
+  loop: "{{ storage_device_probe.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+
+- name: Create volume groups
+  community.general.lvg:
+    vg: "{{ item.name }}"
+    pvs: "{{ item.devices | join(',') }}"
+  loop: "{{ storage_volume_groups }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Create logical volumes
+  community.general.lvol:
+    vg: "{{ item.vg }}"
+    lv: "{{ item.name }}"
+    size: "{{ item.size }}"
+    resizefs: false
+  loop: "{{ storage_logical_volumes }}"
+  loop_control:
+    label: "{{ item.vg }}/{{ item.name }}"
+
+- name: Create filesystems
+  community.general.filesystem:
+    dev: "/dev/{{ item.vg }}/{{ item.name }}"
+    fstype: "{{ item.fs }}"
+    opts: >-
+      {{ item.mkfs_opts | default(storage_mkfs_opts[item.fs] | default('')) }}
+      -L {{ item.label }}
+  loop: "{{ storage_logical_volumes }}"
+  loop_control:
+    label: "/dev/{{ item.vg }}/{{ item.name }}"
+
+- name: Mount the volumes
+  ansible.posix.mount:
+    path: "{{ item.mountpoint }}"
+    src: "/dev/{{ item.vg }}/{{ item.name }}"
+    fstype: "{{ item.fs }}"
+    opts: "{{ item.mount_opts | default(storage_mount_opts) }}"
+    dump: '0'
+    passno: '2'
+    state: mounted
+  loop: "{{ storage_logical_volumes }}"
+  loop_control:
+    label: "{{ item.mountpoint }}"
+
+- name: Set mountpoint ownership
+  ansible.builtin.file:
+    path: "{{ item.mountpoint }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group | default(item.owner) }}"
+    mode: "{{ item.mode | default('0755') }}"
+  loop: "{{ storage_logical_volumes | selectattr('owner', 'defined') | list }}"
+  loop_control:
+    label: "{{ item.mountpoint }}"
