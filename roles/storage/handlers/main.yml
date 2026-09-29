@@ -1,0 +1,8 @@
+---
+# Service actions triggered by storage configuration changes.
+
+# ansible.posix.mount rewrites /etc/fstab but does not reload systemd, which
+# keeps serving its previously generated .mount units until told otherwise.
+- name: Reload systemd
+  ansible.builtin.systemd_service:
+    daemon_reload: true
