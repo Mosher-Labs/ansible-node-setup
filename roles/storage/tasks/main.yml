@@ -70,6 +70,7 @@
   loop: "{{ storage_logical_volumes }}"
   loop_control:
     label: "{{ item.mountpoint }}"
+  notify: Reload systemd
 
 - name: Set mountpoint ownership
   ansible.builtin.file:
