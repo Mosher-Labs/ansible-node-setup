@@ -44,7 +44,7 @@ repos:
     hooks:
       - id: conventional-pre-commit
   - repo: https://github.com/ansible/ansible-lint
-    rev: e7f397ad6dfa20d274afa17cd7bbedd84ed136f5  # frozen: v26.9.0
+    rev: fac2489f3e4ccffa83a40b839770abbf4ab52327  # frozen: v26.10.0
     hooks:
       - id: ansible-lint
         language_version: python3.14
