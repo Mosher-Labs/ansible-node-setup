@@ -371,13 +371,13 @@ code that needs fixing after running pre-commit hooks.
 
 **Python Version:**
 
-This project requires **Python 3.14**. A `.python-version` file is included
+This project requires **Python 3.15**. A `.python-version` file is included
 for automatic version switching with mise, pyenv, asdf, and other version managers.
 
 **To update Python version project-wide:**
 
-1. **`.python-version`** - Update version number (e.g., `3.14`)
-1. **`.pre-commit-config.yaml`** - Update `language_version: python3.14` under
+1. **`.python-version`** - Update version number (e.g., `3.15`)
+1. **`.pre-commit-config.yaml`** - Update `language_version: python3.15` under
   the ansible-lint hook (required to override upstream python3.13 default)
 1. **CLAUDE.md** - Update this documentation to reflect new version
 1. **Test locally** - Run `pre-commit run --all-files` to verify

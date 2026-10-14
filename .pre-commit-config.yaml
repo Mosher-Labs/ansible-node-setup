@@ -47,4 +47,4 @@ repos:
     rev: 9bce2bfb8f4a984e6b13767bc0d6bf0a49492164  # frozen: v26.10.1
     hooks:
       - id: ansible-lint
-        language_version: python3.14
+        language_version: python3.15
