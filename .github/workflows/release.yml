@@ -11,7 +11,7 @@ permissions: read-all
 
 jobs:
   release:
-    uses: "Mosher-Labs/.github/.github/workflows/release.yml@ef07cf67ff3b59d701ca4ebb5670f8579b0b0303" # v0.10.33
+    uses: "Mosher-Labs/.github/.github/workflows/release.yml@5c525704f2a00d0541a59d53a78662a980a4a130" # v0.12.1
     secrets: inherit
     permissions:
       contents: write
