@@ -1,0 +1,8 @@
+---
+# k3s only reads /etc/rancher/k3s/config.yaml at startup, so a config change
+# does nothing until the service restarts. This briefly interrupts the API
+# server; workloads keep running.
+- name: Restart k3s server
+  ansible.builtin.systemd:
+    name: k3s
+    state: restarted
