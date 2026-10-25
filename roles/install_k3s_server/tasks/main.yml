@@ -72,12 +72,21 @@
       flannel-iface: "{{ ansible_facts['default_ipv4']['interface'] }}"
       flannel-backend: "vxlan"
       disable-network-policy: true
+      # MetalLB serves every LoadBalancer Service in this cluster. k3s's own
+      # ServiceLB also claimed them and published hostPort on every node, and
+      # the CNI puts that DNAT in the OUTPUT chain matching dst-type LOCAL.
+      # Port 53 therefore captured each node's own queries to 127.0.0.53, so
+      # when Pi-hole lost its endpoints on 2026-10-22 it took battlestation's
+      # DNS down with it.
+      disable:
+        - servicelb
       kubelet-arg:
         - "resolv-conf=/etc/rancher/k3s/resolv.conf"
         - "system-reserved=cpu=250m,memory=512Mi"
         - "kube-reserved=cpu=250m,memory=512Mi"
         - "eviction-hard=memory.available<500Mi,nodefs.available<10%"
     mode: "0644"
+  notify: Restart k3s server
 
 - name: Download k3s install script
   ansible.builtin.get_url:
