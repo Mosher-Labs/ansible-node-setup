@@ -1,4 +1,8 @@
 ---
+# Pinned so a bad upstream release can't walk in on a CI run or a playbook
+# run. Renovate proposes bumps and CI validates them before they land.
 collections:
-  - ansible.posix
-  - community.general
+  - name: ansible.posix
+    version: 2.2.2
+  - name: community.general
+    version: 13.5.0

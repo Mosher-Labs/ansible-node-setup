@@ -103,6 +103,9 @@
   ansible.builtin.command: k3s --version
   register: install_k3s_server_version_output
   changed_when: false
+  # Read-only, and the next task indexes its stdout. Without this, --check
+  # skips it and the role dies resolving stdout_lines[0] on an empty list.
+  check_mode: false
 
 - name: Share k3s version with agents
   ansible.builtin.set_fact:
@@ -113,6 +116,8 @@
   ansible.builtin.command: cat /var/lib/rancher/k3s/server/node-token
   register: install_k3s_server_k3s_token
   changed_when: false
+  # Read-only, and a later task writes its stdout to a file.
+  check_mode: false
 
 - name: Save k3s join token to a file
   ansible.builtin.copy:
